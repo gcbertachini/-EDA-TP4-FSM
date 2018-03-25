@@ -1,26 +1,28 @@
 /*
-* File:   fsm.h
+* File:   FSM_Server.h
 * Author: Grupo1
 *
 * Created on March 24, 2018
 */
 
-#ifndef FSM_H
-#define FSM_H
+#ifndef FSM_CLIENT_H
+#define FSM_CLIENT_H
 
 /*******************************************************************************
-			CONSTANT AND MACRO DEFINITIONS USING #DEFINE
+CONSTANT AND MACRO DEFINITIONS USING #DEFINE
 ******************************************************************************/
 
 
 /*******************************************************************************
-						ENUMS, STRUCTS Y TYPEDEFS
+ENUMS, STRUCTS Y TYPEDEFS
 ******************************************************************************/
 
 
-typedef enum { END_OF_TABLE, MOVE_RECEIVED, MOVE_SENT, ACK, TIME_OUT , 
-			   TIME_OUT_2, QUIT, ERROR ,GARBAGE , RESET , I_AM_READY_SERVER,
-			   I_AM_READY_CLIENT, INVALID_ACKCODE,VALID_ACKCODE, END_COMMUNICATION } event_t;
+typedef enum {
+	END_OF_TABLE, MOVE_RECEIVED, MOVE_SENT, ACK, TIME_OUT,
+	TIME_OUT_2, QUIT, ERROR, GARBAGE, RESET, I_AM_READY,
+	INVALID_ACKCODE, VALID_ACKCODE, END_COMMUNICATION
+} event_t;
 /*
 EVENT TABLE
 MOVE_RECEIVED:'b'
@@ -29,11 +31,10 @@ ACK: 'd'
 TIME_OUT: 'e'
 TIME_OUT_2: 'f'
 QUIT: 'g'
-ERROR:'h' 
+ERROR:'h'
 GARBAGE: 'i'
 RESET: 'j'
-I_AM_READY_SERVER: 'k'
-I_AM_READY_CLIENT: 'l'
+I_AM_READY: 'k'
 INVALID_ACKCODE: 'm'
 VALID_ACKCODE: 'o'
 END_COMMUNICATION: 'n'
@@ -41,7 +42,7 @@ END_COMMUNICATION: 'n'
 
 /* CONNECTION PROTOCOL EVENTS:
 - MOVE_RECEIVED: The machine picks up a MOVE event from the other computer. We decide we have to make a difference between an incoming
-MOVE and an outgoing one  beacuse the latter will have to wait for the ACK of their pair and in the case of the former 
+MOVE and an outgoing one  beacuse the latter will have to wait for the ACK of their pair and in the case of the former
 the machine itself will send the ACK.
 - MOVE_SENT: The machine sends a MOVE event to the other computer.
 - ACK: The computer flags the success in the communication of a package.

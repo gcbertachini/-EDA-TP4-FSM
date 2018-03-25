@@ -120,10 +120,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="fsm.c" />
+    <ClCompile Include="FSM_Server.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="fsm.h" />
+    <ClInclude Include="FSM_Server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

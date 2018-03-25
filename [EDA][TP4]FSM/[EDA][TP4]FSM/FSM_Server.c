@@ -1,5 +1,5 @@
 /*
-* File:   fsm.cpp
+* File:   FSM_Server.cpp
 * Author: Grupo 1
 *
 * Created on March 24, 2018
@@ -8,7 +8,7 @@
 /*******************************************************************************
                      INCLUDED HEADERS 
 ******************************************************************************/
-#include "fsm.h"
+#include "FSM_Server.h"
 #include <time.h>
 #include <string.h>
 #include <stdio.h>
@@ -28,8 +28,8 @@ typedef enum {CLEAR,FETCH}mode_t;//typedef for the function get_ev
 #define PRINTF 1 //macro for debugging while using printf instead of PDCurse library
 //Messages
 #define MSJ_INTRO "Press the following keys to simulate an event:\nMOVE_RECEIVED:'b'\n MOVE_SENT: 'c'\nACK : 'd'\n" \
-				  "TIME_OUT : 'e'\nTIME_OUT_2 : 'f\nQUIT : 'g'\nERROR : 'h'\nGARBAGE : 'i'\nRESET : 'j'\n I_AM_READY_SERVER : 'k'\n"\
-	              "I_AM_READY_CLIENT : 'l' \nINVALID_ACKCODE : 'm'\nEND_COMMUNICATION : 'n'\n"
+				  "TIME_OUT : 'e'\nTIME_OUT_2 : 'f\nQUIT : 'g'\nERROR : 'h'\nGARBAGE : 'i'\nRESET : 'j'\n I_AM_READY : 'k'\n"\
+	              "INVALID_ACKCODE : 'm'\nEND_COMMUNICATION : 'n'\n"
 
 
 
@@ -84,7 +84,7 @@ event_t * ptr_event = &event_queue[0]; //Initation of pointer
 
 static edge_t Initiating_state[]=
 {
-	{I_AM_READY_SERVER, Waiting_for_ClientOK_state, do_nothing},
+	{I_AM_READY, Waiting_for_ClientOK_state, do_nothing},
 	{ GARBAGE ,Sending_ERROR, do_nothing },
 	{ END_OF_TABLE,Initiating_state, do_nothing }
 };
@@ -92,7 +92,7 @@ static edge_t Initiating_state[]=
 
 static edge_t Waiting_for_ClientOK_state[]=
 {
-	{ I_AM_READY_CLIENT, Finishing_configuration, do_nothing },
+	{ I_AM_READY, Finishing_configuration, do_nothing },
 	{ RESET, Initiating_state, do_nothing },
 	{ GARBAGE ,Sending_ERROR, do_nothing },
 	{ END_OF_TABLE,Waiting_for_ClientOK_state, do_nothing }
@@ -295,7 +295,7 @@ edge_t* fsm(edge_t* ptr2actual_state, int event1)
 *OUTPUT:
 *The program returns the event extracted.
 */
-static event_t get_ev(char mode)
+static event_t get_ev(mode_t mode)
 {
 	static int index = 0;        //index for event reading
 	event_t extracted_event = END_OF_TABLE;
@@ -387,10 +387,7 @@ static void dummy_printf(mode_t mode, event_t actual_event)
 			*ptr_event++ = RESET;
 			break;
 		case('k'):
-			*ptr_event++ = I_AM_READY_SERVER;
-			break;
-		case('l'):
-			*ptr_event++ = I_AM_READY_CLIENT;
+			*ptr_event++ = I_AM_READY;
 			break;
 		case('m'):
 			*ptr_event++ = INVALID_ACKCODE;
@@ -437,11 +434,8 @@ static void dummy_printf(mode_t mode, event_t actual_event)
 		case(RESET):
 			puts("Se recibió el evento RESET");
 			break;
-		case(I_AM_READY_SERVER):
-			puts("Se recibió el evento I_AM_READY_SERVER");
-			break;
-		case(I_AM_READY_CLIENT):
-			puts("Se recibió el evento I_AM_READY_CLIENT");
+		case(I_AM_READY):
+			puts("Se recibió el evento I_AM_READY");
 			break;
 		case(INVALID_ACKCODE):
 			puts("Se recibió el evento INVALID_ACKCODE");

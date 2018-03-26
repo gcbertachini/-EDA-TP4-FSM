@@ -120,19 +120,25 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FSM_Server.c" />
+    <ClCompile Include="FrontEnd.cpp" />
+    <ClCompile Include="FSM_Server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FrontEnd.h" />
     <ClInclude Include="FSM_Server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\pdcurses_vc120.3.4.0.3\build\native\pdcurses_vc120.targets" Condition="Exists('..\packages\pdcurses_vc120.3.4.0.3\build\native\pdcurses_vc120.targets')" />
+    <Import Project="..\packages\PDCurses34.redist.3.4.0.1\build\native\PDCurses34.redist.targets" Condition="Exists('..\packages\PDCurses34.redist.3.4.0.1\build\native\PDCurses34.redist.targets')" />
+    <Import Project="..\packages\PDCurses34.3.4.0.1\build\native\PDCurses34.targets" Condition="Exists('..\packages\PDCurses34.3.4.0.1\build\native\PDCurses34.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\pdcurses_vc120.3.4.0.3\build\native\pdcurses_vc120.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\pdcurses_vc120.3.4.0.3\build\native\pdcurses_vc120.targets'))" />
+    <Error Condition="!Exists('..\packages\PDCurses34.redist.3.4.0.1\build\native\PDCurses34.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PDCurses34.redist.3.4.0.1\build\native\PDCurses34.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\PDCurses34.3.4.0.1\build\native\PDCurses34.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PDCurses34.3.4.0.1\build\native\PDCurses34.targets'))" />
   </Target>
 </Project>

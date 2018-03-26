@@ -13,19 +13,22 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "curses.h"
+#include "FrontEnd.h"
+#include"Windows.h"
 
 /*******************************************************************************
 						ENUMS, STRUCTS Y TYPEDEFS
 ******************************************************************************/
-typedef enum {CLEAR,FETCH}mode_t;//typedef for the function get_ev
+//typedef enum {CLEAR,FETCH}mode_t;//typedef for the function get_ev
 
 
  /*******************************************************************************
 					  CONSTANT AND MACRO DEFINITIONS USING #DEFINE
  ******************************************************************************/
-#define PRINT 1        //variable for debugging
+#define PRINT 0        //variable for debugging
 #define SIZEEVENTQUEUE 100 //Size of event queue
-#define PRINTF 1 //macro for debugging while using printf instead of PDCurse library
+#define PRINTF 0 //macro for debugging while using printf instead of PDCurse library
 //Messages
 #define MSJ_INTRO "Press the following keys to simulate an event:\nMOVE_RECEIVED:'b'\n MOVE_SENT: 'c'\nACK : 'd'\n" \
 				  "TIME_OUT : 'e'\nTIME_OUT_2 : 'f\nQUIT : 'g'\nERROR : 'h'\nGARBAGE : 'i'\nRESET : 'j'\n I_AM_READY : 'k'\n"\
@@ -82,7 +85,7 @@ extern edge_t Sending_ERROR[];
 event_t * ptr_event = &event_queue[0]; //Initation of pointer
 
 
-static edge_t Initiating_state[]=
+ edge_t Initiating_state[]=
 {
 	{I_AM_READY, Waiting_for_ClientOK_state, do_nothing},
 	{ GARBAGE ,Sending_ERROR, do_nothing },
@@ -90,7 +93,7 @@ static edge_t Initiating_state[]=
 };
 
 
-static edge_t Waiting_for_ClientOK_state[]=
+ edge_t Waiting_for_ClientOK_state[]=
 {
 	{ I_AM_READY, Finishing_configuration, do_nothing },
 	{ RESET, Initiating_state, do_nothing },
@@ -98,7 +101,7 @@ static edge_t Waiting_for_ClientOK_state[]=
 	{ END_OF_TABLE,Waiting_for_ClientOK_state, do_nothing }
 };
 
-static edge_t Finishing_configuration[]=
+ edge_t Finishing_configuration[]=
 {
 	{ ACK, Looping_state, do_nothing },
 	{ RESET, Initiating_state, do_nothing },
@@ -106,7 +109,7 @@ static edge_t Finishing_configuration[]=
 	{ END_OF_TABLE,Finishing_configuration, do_nothing }
 };
 
-static edge_t Looping_state[]=
+ edge_t Looping_state[]=
 {
 	{ MOVE_RECEIVED, Waiting_to_send_ACK_state, do_nothing },
 	{ MOVE_SENT, Waiting_for_ACK_state, do_nothing },
@@ -116,7 +119,7 @@ static edge_t Looping_state[]=
 	{ END_OF_TABLE,Looping_state, do_nothing }
 };
 
-static edge_t Waiting_to_send_ACK_state[]=
+ edge_t Waiting_to_send_ACK_state[]=
 {
 	{ ACK, Looping_state, do_nothing },
 	{ RESET, Initiating_state, do_nothing },
@@ -124,7 +127,7 @@ static edge_t Waiting_to_send_ACK_state[]=
 	{ END_OF_TABLE,Waiting_to_send_ACK_state, do_nothing }
 };
 
-static edge_t Waiting_for_ACK_state[]=
+ edge_t Waiting_for_ACK_state[]=
 {
 	{ TIME_OUT_2, Sending_ERROR, do_nothing },
 	{ TIME_OUT, Resending_MOVE, do_nothing },
@@ -134,7 +137,7 @@ static edge_t Waiting_for_ACK_state[]=
 	{ END_OF_TABLE,Waiting_for_ACK_state, do_nothing }
 };
 
-static edge_t Resending_MOVE[]=
+ edge_t Resending_MOVE[]=
 {
 	{ MOVE_SENT, Waiting_for_ACK_state, do_nothing },
 	{ RESET, Initiating_state, do_nothing },
@@ -142,7 +145,7 @@ static edge_t Resending_MOVE[]=
 	{ END_OF_TABLE,Resending_MOVE, do_nothing }
 };
 
-static edge_t Analyzing_ACK[] =
+ edge_t Analyzing_ACK[] =
 {
 	{ INVALID_ACKCODE, Waiting_for_ACK_state, do_nothing },
 	{ VALID_ACKCODE,Looping_state ,do_nothing},
@@ -152,9 +155,9 @@ static edge_t Analyzing_ACK[] =
 	{ END_OF_TABLE,Analyzing_ACK, do_nothing }
 };
 
-static edge_t Sending_ERROR[]=
+ edge_t Sending_ERROR[]=
 {
-	{ ERROR, Sending_ERROR, fun_exit },
+	{ ERROR1, Sending_ERROR, fun_exit },
 	{ RESET, Initiating_state, do_nothing },
 	{ GARBAGE ,Sending_ERROR, fun_exit },
 	{ END_OF_TABLE,Sending_ERROR, do_nothing }
@@ -175,8 +178,32 @@ static edge_t Sending_ERROR[]=
 int  main(void)
 {
 	edge_t *actual_state = Initiating_state; //Creation of a pointer and initiation to the Initiating_state
-	event_t actual_event;
+	event_t actual_event = END_OF_TABLE;
+	WINDOW * winTest = NULL;                     //Variable en dónde se guarda la terminal (Window) en donde voy a trabajar.
+	winTest = initscr();
+	if (!winTest)
+	{
+		printf("falla al crear ventana");
+	}
 
+	start_color();
+
+	//Declaro los "color pairs" siempre primero foreground y después background.
+	init_pair(1, COLOR_BLUE, COLOR_BLACK);
+	init_pair(2, COLOR_RED, COLOR_BLACK);
+	init_pair(3, COLOR_GREEN, COLOR_BLACK);
+
+	//Esta opción hace que siempre que se llame a una función que escribe se refresque la pantalla.
+	immedok(winTest, TRUE);
+
+	//Elijo el primer set de colores (letras azules con fondo negro) y escribo un texto de prueba.
+	color_set(3, NULL);
+
+
+	//Con las dos opciones de abajo elijo que el getch()sea no bloqueante (nodelay TRUE) y que no
+	//muestr los caracteres cuando el usuario los escribe (noecho).
+	nodelay(winTest, TRUE);
+	noecho();
 
 #if PRINT
 	int i;
@@ -189,13 +216,13 @@ int  main(void)
 #if PRINTF 
 	puts(MSJ_INTRO);
 #endif
-	
+	event_t old_event = END_OF_TABLE;
 	while (running)  //check of the control variable to keep looping
 	{
 		while ((running)) //check if there is something in the queue or if the user decided to shut off the simulation
 		{
-
-			dummy_printf(FETCH, 0);//Simulo la llegada de un evento
+			imprimir_simulacion(ESPERANDO,actual_event, old_event, actual_state,winTest); //ESPERANDO, CON EVENTO ANTERIOR
+			//dummy_printf(FETCH, 0);//Simulo la llegada de un evento
 
 			actual_event = get_ev(FETCH);
 #if PRINT
@@ -207,8 +234,12 @@ int  main(void)
 #if PRINTF 
 			dummy_printf(CLEAR, actual_event); //Me fijo que llego
 #endif
-
+			
+			imprimir_simulacion(PROCESANDO,actual_event, old_event, actual_state, winTest); //Procesando, con EVENTO ACTUAL
+			Sleep(500);
 			actual_state = fsm(actual_state, actual_event); //The FSM returns the next state
+			old_event = actual_event;
+			
 
 #if PRINTF 
 
@@ -250,7 +281,7 @@ int  main(void)
 
 		
 	}
-
+	endwin();
 	return EXIT_SUCCESS;
 }
 
@@ -316,7 +347,7 @@ static event_t get_ev(mode_t mode)
 		clean_event_queue();
 		ptr_event = &event_queue[0];
 	}
-	puts("Se extrajo un evento mediante getev()\n");
+	//puts("Se extrajo un evento mediante getev()\n");
 	return extracted_event; //Devuelvo el evento extraido
 }
 
@@ -352,7 +383,7 @@ static void do_nothing(void)
                     DUMMY_PRINTF
 **************************************************************/
 static void dummy_printf(mode_t mode, event_t actual_event)
-{
+{/*
 	if (mode == FETCH)
 	{	
 		puts("Ingrese un evento:\n");
@@ -453,5 +484,5 @@ static void dummy_printf(mode_t mode, event_t actual_event)
 			puts("Se recibió el evento GARBAGE");
 			break;
 		}
-	}
+	}*/
 }

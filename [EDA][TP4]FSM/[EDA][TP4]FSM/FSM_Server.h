@@ -8,6 +8,8 @@
 #ifndef FSM_SERVER_H
 #define FSM_SERVER_H
 
+
+
 /*******************************************************************************
 			CONSTANT AND MACRO DEFINITIONS USING #DEFINE
 ******************************************************************************/
@@ -19,8 +21,12 @@
 
 
 typedef enum { END_OF_TABLE, MOVE_RECEIVED, MOVE_SENT, ACK, TIME_OUT , 
-			   TIME_OUT_2, QUIT, ERROR ,GARBAGE , RESET , I_AM_READY,
+			   TIME_OUT_2, QUIT, ERROR1 ,GARBAGE , RESET , I_AM_READY,
 			    INVALID_ACKCODE,VALID_ACKCODE, END_COMMUNICATION } event_t;
+
+typedef enum { CLEAR, FETCH }mode_t;//typedef for the function get_ev
+
+
 /*
 EVENT TABLE
 MOVE_RECEIVED:'b'
@@ -77,3 +83,18 @@ struct edge
 
 
 #endif /* FSM_H */
+
+/*******************************************************************************
+FSM STATES
+******************************************************************************/
+
+//Every state is represent by an array
+extern edge_t Initiating_state[];
+extern edge_t Waiting_for_ClientOK_state[];
+extern edge_t Finishing_configuration[];
+extern edge_t Looping_state[];
+extern edge_t Waiting_to_send_ACK_state[];
+extern edge_t Waiting_for_ACK_state[];
+extern edge_t Resending_MOVE[];
+extern edge_t Analyzing_ACK[];
+extern edge_t Sending_ERROR[];

@@ -186,7 +186,7 @@ int  main(void)
 	winTest = initscr();
 	if (!winTest)
 	{
-		printf("falla al crear ventana");
+		printf("Falla al crear ventana\n");
 	}
 
 	start_color();
@@ -285,6 +285,7 @@ int  main(void)
 
 		
 	}
+	Sleep(500);
 	endwin();
 	return EXIT_SUCCESS;
 }

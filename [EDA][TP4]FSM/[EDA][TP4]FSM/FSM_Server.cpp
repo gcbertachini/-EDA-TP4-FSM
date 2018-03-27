@@ -160,7 +160,7 @@ extern edge_t Sending_ERROR[];
 {
 	{ ERROR1, Sending_ERROR, fun_exit },
 	{ RESET, Initiating_state, do_nothing },
-	{ GARBAGE ,Sending_ERROR, fun_exit },
+	{ GARBAGE ,Sending_ERROR, do_nothing },
 	{ END_OF_TABLE,Sending_ERROR, do_nothing }
 };
 
@@ -285,7 +285,7 @@ int  main(void)
 
 		
 	}
-	Sleep(500);
+	Sleep(1500);
 	endwin();
 	return EXIT_SUCCESS;
 }

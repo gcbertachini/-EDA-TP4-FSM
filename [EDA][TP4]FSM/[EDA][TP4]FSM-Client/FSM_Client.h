@@ -76,7 +76,7 @@ struct edge
 {
 	event_t event;
 	edge_t *nextstate;
-	void(*fun_trans)(&int);
+	void(*fun_trans)(void);
 
 };
 

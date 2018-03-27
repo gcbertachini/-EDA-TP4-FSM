@@ -196,7 +196,7 @@ string decide_action(event_t actual_event, edge_t* actual_state)
 	switch (actual_event)
 	{
 	case(MOVE_RECEIVED):
-		res = " Se recibio un mensejae MOVE";
+		res = " Se recibio un mensja MOVE";
 		break;
 	case(MOVE_SENT):
 		if (actual_state == Waiting_for_ACK_state)
@@ -241,7 +241,7 @@ string decide_action(event_t actual_event, edge_t* actual_state)
 		res = " N/D";
 		break;
 	default:
-		res = " Se recibió información no compatible con el protocolo.";
+		res = " Se recibio informacion no compatible con el protocolo.";
 		break;
 	}
 	return res;

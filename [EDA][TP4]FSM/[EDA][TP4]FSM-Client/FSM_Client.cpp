@@ -24,9 +24,9 @@ ENUMS, STRUCTS Y TYPEDEFS
 //typedef enum { CLEAR, FETCH }mode_t;//typedef for the function get_ev
 
 
-									/*******************************************************************************
-									CONSTANT AND MACRO DEFINITIONS USING #DEFINE
-									******************************************************************************/
+/*******************************************************************************
+						CONSTANT AND MACRO DEFINITIONS USING #DEFINE
+******************************************************************************/
 #define PRINT 0        //variable for debugging
 #define PRINTF 0 //macro for debugging while using printf instead of PDCurse library
 									//Messages
@@ -36,9 +36,9 @@ ENUMS, STRUCTS Y TYPEDEFS
 
 
 
-									/*******************************************************************************
-									FUNCTION PROTOTYPES FOR PRIVATE FUNCTIONS WITH FILE LEVEL SCOPE
-									******************************************************************************/
+/*******************************************************************************
+        FUNCTION PROTOTYPES FOR PRIVATE FUNCTIONS WITH FILE LEVEL SCOPE
+******************************************************************************/
 static edge_t* fsm(edge_t* ptr_actualstate, int event1);    //FSM Manager 
 
 static event_t get_ev(mode_t mode);      //event handler
@@ -150,7 +150,7 @@ edge_t Sending_ERROR[] =
 {
 	{ ERROR1, Sending_ERROR, fun_exit },
 	{ RESET, Waiting_for_ServerOK_state, do_nothing },
-	{ GARBAGE ,Sending_ERROR, fun_exit },
+	{ GARBAGE ,Sending_ERROR, do_nothing },
 	{ END_OF_TABLE,Sending_ERROR, do_nothing }
 };
 
@@ -270,6 +270,7 @@ int  main(void)
 
 
 	}
+	Sleep(1500);
 	endwin();
 	return EXIT_SUCCESS;
 }

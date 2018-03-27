@@ -201,7 +201,7 @@ int  main(void)
 
 
 	//Con las dos opciones de abajo elijo que el getch()sea no bloqueante (nodelay TRUE) y que no
-	//muestr los caracteres cuando el usuario los escribe (noecho).
+	//muestre los caracteres cuando el usuario los escribe (noecho).
 	nodelay(winTest, TRUE);
 	noecho();
 
@@ -330,7 +330,7 @@ static event_t get_ev(mode_t mode)
 {
 	static int index = 0;        //index for event reading
 	event_t extracted_event = END_OF_TABLE;
-	getchar();
+	//getchar();
 	if (mode) 
 	{
 		//if (event_queue[index])   //if there is an event in the queue, it extracted the event and increment the index

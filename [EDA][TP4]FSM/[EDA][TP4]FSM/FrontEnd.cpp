@@ -110,9 +110,9 @@ void imprimir_simulacion(modoFE_t modo,event_t evento_actual, event_t evento_ant
 					*ptr_event++ = VALID_ACKCODE;
 					break;
 
-				/*case('i'):default:
-					*ptr_event++ = GARBAGE;
-					break;*/
+				default:
+					//*ptr_event++ = GARBAGE;
+					break;
 
 				}
 
@@ -174,7 +174,7 @@ string decide_event(event_t actual_event)
 
 string decide_state(edge_t* actual_state)
 {
-	string res;
+	string res;									//NO falta desreferenciar esta estructura?
 	if (actual_state == Initiating_state)
 		res = "Initiating_state";
 
@@ -185,10 +185,10 @@ string decide_state(edge_t* actual_state)
 		res = "Finishing_configuration";
 
 	else if (actual_state == Looping_state)
-		res = "Estado actual:Looping_state";
+		res = "Looping_state";
 
 	else if (actual_state == Waiting_to_send_ACK_state)
-		res = "Estado actual:Waiting_to_send_ACK_state";
+		res = "Waiting_to_send_ACK_state";
 
 	else if (actual_state == Waiting_for_ACK_state)
 		res = "Waiting_for_ACK_state";

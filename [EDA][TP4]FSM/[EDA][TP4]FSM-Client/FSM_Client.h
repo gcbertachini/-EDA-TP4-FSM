@@ -11,16 +11,19 @@
 /*******************************************************************************
 CONSTANT AND MACRO DEFINITIONS USING #DEFINE
 ******************************************************************************/
+#define SIZEEVENTQUEUE 100 //Size of event queue
 
 
 /*******************************************************************************
 ENUMS, STRUCTS Y TYPEDEFS
 ******************************************************************************/
 
+typedef enum { CLEAR, FETCH }mode_t;//typedef for the function get_ev
+
 
 typedef enum {
 	END_OF_TABLE, MOVE_RECEIVED, MOVE_SENT, ACK, TIME_OUT,
-	TIME_OUT_2, QUIT, ERROR, GARBAGE, RESET, I_AM_READY,
+	TIME_OUT_2, QUIT, ERROR1, GARBAGE, RESET, I_AM_READY,
 	INVALID_ACKCODE, VALID_ACKCODE, END_COMMUNICATION
 } event_t;
 /*
@@ -73,9 +76,24 @@ struct edge
 {
 	event_t event;
 	edge_t *nextstate;
-	void(*fun_trans)(void);
+	void(*fun_trans)(&int);
 
 };
 
+
+
+/*******************************************************************************
+FSM STATES
+******************************************************************************/
+
+//Every state is represent by an array
+extern edge_t Waiting_for_ServerOK_state[];
+extern edge_t Finishing_configuration[];
+extern edge_t Looping_state[];
+extern edge_t Waiting_to_send_ACK_state[];
+extern edge_t Waiting_for_ACK_state[];
+extern edge_t Resending_MOVE[];
+extern edge_t Analyzing_ACK[];
+extern edge_t Sending_ERROR[];
 
 #endif /* FSM_H */

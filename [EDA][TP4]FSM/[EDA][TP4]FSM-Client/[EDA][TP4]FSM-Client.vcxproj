@@ -119,9 +119,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="event_queueC.cpp" />
+    <ClCompile Include="FrontEndC.cpp" />
     <ClCompile Include="FSM_Client.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="event_queueC.h" />
+    <ClInclude Include="FrontEndC.h" />
     <ClInclude Include="FSM_Client.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -21,9 +21,21 @@
     <ClCompile Include="FSM_Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="event_queueC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FrontEndC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FSM_Client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FrontEndC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="event_queueC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

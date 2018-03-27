@@ -14,6 +14,7 @@
 			CONSTANT AND MACRO DEFINITIONS USING #DEFINE
 ******************************************************************************/
 
+#define SIZEEVENTQUEUE 100 //Size of event queue
 
 /*******************************************************************************
 						ENUMS, STRUCTS Y TYPEDEFS
@@ -82,7 +83,6 @@ struct edge
 };
 
 
-#endif /* FSM_H */
 
 /*******************************************************************************
 FSM STATES
@@ -98,3 +98,5 @@ extern edge_t Waiting_for_ACK_state[];
 extern edge_t Resending_MOVE[];
 extern edge_t Analyzing_ACK[];
 extern edge_t Sending_ERROR[];
+
+#endif /* FSM_H */

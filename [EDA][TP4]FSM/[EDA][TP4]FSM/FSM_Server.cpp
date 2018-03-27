@@ -10,12 +10,13 @@
 ******************************************************************************/
 #include "FSM_Server.h"
 #include <time.h>
-#include <string.h>
+#include <string.h>		
 #include <stdio.h>
 #include <stdlib.h>
-#include "curses.h"
+#include "curses.h"		//Libreria grafica
 #include "FrontEnd.h"
-#include"Windows.h"
+#include"Windows.h"		//Sleep seguro
+#include "event_queue.h"
 
 /*******************************************************************************
 						ENUMS, STRUCTS Y TYPEDEFS
@@ -27,7 +28,7 @@
 					  CONSTANT AND MACRO DEFINITIONS USING #DEFINE
  ******************************************************************************/
 #define PRINT 0        //variable for debugging
-#define SIZEEVENTQUEUE 100 //Size of event queue
+
 #define PRINTF 0 //macro for debugging while using printf instead of PDCurse library
 //Messages
 #define MSJ_INTRO "Press the following keys to simulate an event:\nMOVE_RECEIVED:'b'\n MOVE_SENT: 'c'\nACK : 'd'\n" \
@@ -55,7 +56,7 @@ static void dummy_printf(mode_t mode, event_t actual_event);
                STATIC VARIABLES WITH FILE LEVEL SCOPE
  ******************************************************************************/
 //Event queue for the FSM
-static event_t event_queue[SIZEEVENTQUEUE];
+//static event_t event_queue[SIZEEVENTQUEUE];
 //Control variable for the execution of the program
 static switch_t running = ON;
 
@@ -82,7 +83,7 @@ extern edge_t Sending_ERROR[];
                            STATES INITIATION
 ******************************************************************************/
 
-event_t * ptr_event = &event_queue[0]; //Initation of pointer
+//event_t * ptr_event = &event_queue[0]; //Initation of pointer
 
 
  edge_t Initiating_state[]=
@@ -177,6 +178,8 @@ event_t * ptr_event = &event_queue[0]; //Initation of pointer
 **************************************************************/
 int  main(void)
 {
+	event_queue ev_queue;	// Creation of event_queue object
+	ev_queue.clean_queue();
 	edge_t *actual_state = Initiating_state; //Creation of a pointer and initiation to the Initiating_state
 	event_t actual_event = END_OF_TABLE;
 	WINDOW * winTest = NULL;                     //Variable en dónde se guarda la terminal (Window) en donde voy a trabajar.
@@ -221,10 +224,11 @@ int  main(void)
 	{
 		while ((running)) //check if there is something in the queue or if the user decided to shut off the simulation
 		{
-			imprimir_simulacion(ESPERANDO,actual_event, old_event, actual_state,winTest); //ESPERANDO, CON EVENTO ANTERIOR
+			imprimir_simulacion(ESPERANDO,actual_event, old_event, actual_state,winTest, ev_queue); //ESPERANDO, CON EVENTO ANTERIOR
 			//dummy_printf(FETCH, 0);//Simulo la llegada de un evento
 
-			actual_event = get_ev(FETCH);
+			//actual_event = get_ev(FETCH);
+			actual_event = ev_queue.read_queue();
 #if PRINT
 			printf("\nLa cola de eventos despues de tomar el evento:\n");
 			for (i = 0; i<SIZEEVENTQUEUE; i++)
@@ -235,7 +239,7 @@ int  main(void)
 			dummy_printf(CLEAR, actual_event); //Me fijo que llego
 #endif
 			
-			imprimir_simulacion(PROCESANDO,actual_event, old_event, actual_state, winTest); //Procesando, con EVENTO ACTUAL
+			imprimir_simulacion(PROCESANDO,actual_event, old_event, actual_state, winTest, ev_queue); //Procesando, con EVENTO ACTUAL
 			Sleep(500);
 			actual_state = fsm(actual_state, actual_event); //The FSM returns the next state
 			old_event = actual_event;
@@ -326,7 +330,7 @@ edge_t* fsm(edge_t* ptr2actual_state, int event1)
 *OUTPUT:
 *The program returns the event extracted.
 */
-static event_t get_ev(mode_t mode)
+/*static event_t get_ev(mode_t mode)
 {
 	static int index = 0;        //index for event reading
 	event_t extracted_event = END_OF_TABLE;
@@ -335,7 +339,7 @@ static event_t get_ev(mode_t mode)
 	{
 		//if (event_queue[index])   //if there is an event in the queue, it extracted the event and increment the index
 		{
-			extracted_event = event_queue[index++];    //if it can not found one, it retruns 0 that equals an END_OF_TABLE 
+			extracted_event = event_qu[index++];    //if it can not found one, it retruns 0 that equals an END_OF_TABLE 
 											  //if the latter happens the fsm does nothing and waits for the next event
 		}
 		
@@ -350,7 +354,7 @@ static event_t get_ev(mode_t mode)
 	//puts("Se extrajo un evento mediante getev()\n");
 	return extracted_event; //Devuelvo el evento extraido
 }
-
+*/
 
 /**************************************************************
 					FUN_EXIT
@@ -364,15 +368,16 @@ void fun_exit(void)
 
 }
 
+
 /**************************************************************
 				   CLEAN_EVENT_QUEUE
-**************************************************************/
+*************************************************************
 static void clean_event_queue(void)
 {
 	for (uint i = 0; i < SIZEEVENTQUEUE; i++)
 		event_queue[i] = END_OF_TABLE;
 ;
-}
+}*/
  
 static void do_nothing(void)
 {

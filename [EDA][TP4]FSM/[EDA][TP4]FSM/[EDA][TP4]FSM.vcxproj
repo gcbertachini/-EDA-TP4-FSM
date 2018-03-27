@@ -120,10 +120,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="event_queue.cpp" />
     <ClCompile Include="FrontEnd.cpp" />
     <ClCompile Include="FSM_Server.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="event_queue.h" />
     <ClInclude Include="FrontEnd.h" />
     <ClInclude Include="FSM_Server.h" />
   </ItemGroup>

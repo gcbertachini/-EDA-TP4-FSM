@@ -1,4 +1,4 @@
-#include "FrontEnd.h"
+#include "FrontEndC.h"
 
 
 #include <iostream>
@@ -93,6 +93,7 @@ void imprimir_simulacion(modoFE_t modo,event_t evento_actual, event_t evento_ant
 					break;
 				case('g'):
 					ev_queue.add_event(QUIT);
+
 					break;
 				case('h'):
 					ev_queue.add_event(ERROR1);
@@ -112,9 +113,10 @@ void imprimir_simulacion(modoFE_t modo,event_t evento_actual, event_t evento_ant
 				case('o'):
 					ev_queue.add_event(VALID_ACKCODE);
 					break;
-
+				case(-1):
+					break;
 				default:
-					//*ptr_event++ = GARBAGE;
+					ev_queue.add_event(GARBAGE);
 					break;
 
 				}
@@ -178,11 +180,10 @@ string decide_event(event_t actual_event)
 string decide_state(edge_t* actual_state)
 {
 	string res;									//NO falta desreferenciar esta estructura?
-	if (actual_state == Initiating_state)
-		res = "Initiating_state";
 
-	else if (actual_state == Waiting_for_ClientOK_state)
-		res = "Waiting_for_ClientOK_state";
+
+	if (actual_state == Waiting_for_ServerOK_state)
+		res = "Waiting_for_ServerOK_state";
 
 	else if (actual_state == Finishing_configuration)
 		res = "Finishing_configuration";
